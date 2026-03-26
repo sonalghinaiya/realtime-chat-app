@@ -10,11 +10,22 @@ const io = new Server(server);
 
 //Socket.io
 io.on("connection", (socket) => {
+  console.log("User connected", socket.id);
+
+  socket.on("user-joined", (username) => {
+    socket.username = username;
+    socket.broadcast.emit("user-joined", `${username} joined the chat`);
+  });
   socket.on("user-message", (data) => {
     io.emit("message", data);
     // console.log("A new User Message", message);
   });
-  //   console.log("A new user has connected", socket.id);
+
+  socket.on("disconnect", () => {
+    if (socket.username) {
+      socket.broadcast.emit("user-left", `${socket.username} left the chat`);
+    }
+  });
 });
 
 app.use(express.static(path.resolve("./public")));

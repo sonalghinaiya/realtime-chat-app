@@ -21,22 +21,47 @@
       const messageInput = document.getElementById("message");
       const allMessage = document.getElementById("messages");
 
-      socket.on("message", (data) => {
-        const p = document.createElement("p");
-        p.innerText = `${data.username}: ${data.message}`;
-        allMessage.appendChild(p);
+      let username = "";
+      //Ask Username
+      userInput.addEventListener("change", () => {
+        username = userInput.value;
+        if (!username) return;
+        socket.emit("user-joined", username);
       });
 
+      //Send Message
       sendBtn.addEventListener("click", (e) => {
         const message = messageInput.value;
-        const username = userInput.value;
-
+        if (!message) return;
         socket.emit("user-message", {
           username,
           message,
         });
 
         messageInput.value = "";
+      });
+
+      //Receive message
+      socket.on("message", (data) => {
+        const p = document.createElement("p");
+        p.innerText = `${data.username}: ${data.message}`;
+        allMessage.appendChild(p);
+      });
+
+      //user joined
+      socket.on("user-joined", (msg) => {
+        const p = document.createElement("p");
+        p.innerText = msg;
+        p.style.color = "green";
+        allMessage.appendChild(p);
+      });
+
+      //user left
+      socket.on("user-left", (msg) => {
+        const p = document.createElement("p");
+        p.innerText = msg;
+        p.style.color = "red";
+        allMessage.appendChild(p);
       });
     </script>
   </body>
