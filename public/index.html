@@ -7,26 +7,36 @@
   </head>
   <body>
     <h1>Chatting</h1>
+    <input type="text" id="username" placeholder="Enter Username" />
     <input type="text" id="message" placeholder="Enter Message" />
     <button id="sendBtn">Send</button>
     <div id="messages"></div>
+
     <script src="/socket.io/socket.io.js"></script>
+
     <script>
       var socket = io();
       const sendBtn = document.getElementById("sendBtn");
+      const userInput = document.getElementById("username");
       const messageInput = document.getElementById("message");
       const allMessage = document.getElementById("messages");
 
-      socket.on("message", (message) => {
+      socket.on("message", (data) => {
         const p = document.createElement("p");
-        p.innerText = message;
+        p.innerText = `${data.username}: ${data.message}`;
         allMessage.appendChild(p);
       });
 
       sendBtn.addEventListener("click", (e) => {
         const message = messageInput.value;
-        console.log(message);
-        socket.emit("user-message", message);
+        const username = userInput.value;
+
+        socket.emit("user-message", {
+          username,
+          message,
+        });
+
+        messageInput.value = "";
       });
     </script>
   </body>
