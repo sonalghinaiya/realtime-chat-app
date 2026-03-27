@@ -7,9 +7,14 @@
   </head>
   <body>
     <h1>Chatting</h1>
+    <input type="text" id="room" placeholder="Enter Room Name" />
     <input type="text" id="username" placeholder="Enter Username" />
+    <button id="joinBtn">Join Chat</button>
+    <br />
+    <br />
     <input type="text" id="message" placeholder="Enter Message" />
     <button id="sendBtn">Send</button>
+
     <div id="messages"></div>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -17,25 +22,39 @@
     <script>
       var socket = io();
       const sendBtn = document.getElementById("sendBtn");
+      const joinBtn = document.getElementById("joinBtn");
+
+      const roomInput = document.getElementById("room");
       const userInput = document.getElementById("username");
       const messageInput = document.getElementById("message");
       const allMessage = document.getElementById("messages");
 
       let username = "";
+      let room = "";
+      let joined = false;
+
       //Ask Username
-      userInput.addEventListener("change", () => {
+      joinBtn.addEventListener("click", () => {
         username = userInput.value;
-        if (!username) return;
-        socket.emit("user-joined", username);
+        room = roomInput.value;
+        if (!username || !room) return;
+        // socket.emit("user-joined", username);
+        socket.emit("join-room", {
+          username,
+          room,
+        });
+        joined = true;
       });
 
       //Send Message
       sendBtn.addEventListener("click", (e) => {
         const message = messageInput.value;
+        if (!joined) return alert("Join room first");
         if (!message) return;
         socket.emit("user-message", {
           username,
           message,
+          room,
         });
 
         messageInput.value = "";
