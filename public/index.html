@@ -133,12 +133,17 @@
       //Send Message
       sendBtn.addEventListener("click", (e) => {
         const message = messageInput.value;
+        const time = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         if (!joined) return alert("Join room first");
         if (!message) return;
         socket.emit("user-message", {
           username,
           message,
           room,
+          time,
         });
 
         messageInput.value = "";
@@ -153,7 +158,7 @@
         } else {
           p.classList.add("other");
         }
-        p.innerText = `${data.username}: ${data.message}`;
+        p.innerText = `${data.username} (${data.time}): ${data.message}`;
         allMessage.appendChild(p);
       });
 
