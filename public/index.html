@@ -58,7 +58,7 @@
         cursor: pointer;
       }
       #messages {
-        height: 300px;
+        height: 440px;
         overflow-y: auto;
         padding: 10px;
         background: #f2efec;
@@ -83,6 +83,36 @@
         text-align: center;
         color: gray;
         font-size: 12px;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          margin: 10px;
+          max-width: 100%;
+          height: 95vh;
+        }
+
+        .join-section {
+          flex-direction: column;
+        }
+
+        .input-section {
+          flex-direction: column;
+        }
+
+        #joinBtn,
+        #sendBtn {
+          width: 100%;
+        }
+
+        #messages {
+          height: 50vh;
+        }
+
+        h3 {
+          font-size: 18px;
+          padding: 10px;
+        }
       }
     </style>
   </head>
@@ -160,6 +190,7 @@
         }
         p.innerText = `${data.username} (${data.time}): ${data.message}`;
         allMessage.appendChild(p);
+        allMessage.scrollTop = allMessage.scrollHeight;
       });
 
       //user joined
@@ -168,6 +199,7 @@
         p.classList.add("system");
         p.innerText = msg;
         allMessage.appendChild(p);
+        allMessage.scrollTop = allMessage.scrollHeight;
       });
 
       //user left
@@ -176,6 +208,7 @@
         p.classList.add("system");
         p.innerText = msg;
         allMessage.appendChild(p);
+        allMessage.scrollTop = allMessage.scrollHeight;
       });
     </script>
   </body>
