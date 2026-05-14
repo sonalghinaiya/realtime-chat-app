@@ -2,12 +2,14 @@ import React from "react";
 import JoinRoom from "./JoinRoom";
 import { useState } from "react";
 import { socket } from "../socket/socket";
+import MessageInput from "./MessageInput";
 
 function Chat() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
 
+  // Join Room
   const handleJoinRoom = () => {
     if (!username || !room) return;
     socket.emit("join-room", {
@@ -15,6 +17,20 @@ function Chat() {
       room,
     });
     setJoined(true);
+  };
+
+  // Send Message
+  const handleSendMessage = (message) => {
+    const time = new Date().toLocaleDateString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    socket.emit("user-message", {
+      username,
+      room,
+      message,
+      time,
+    });
   };
   return (
     <div className="h-screen bg-gray-100 flex justify-center items-center p-4">
@@ -27,7 +43,13 @@ function Chat() {
           handleJoinRoom={handleJoinRoom}
         />
       ) : (
-        <h1>You Joinedddddd</h1>
+        <div className="w-full max-w-2xl h-[90vh] bg-white rounded-xl shadow-lg flex flex-col overflow-hidden">
+          <div className="bg-blue-500 text-white p-4 text-xl font-bold">
+            Room: {room}
+          </div>
+
+          <MessageInput handleSendMessage={handleSendMessage} />
+        </div>
       )}
     </div>
   );
