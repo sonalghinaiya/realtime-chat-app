@@ -33,6 +33,11 @@ io.on("connection", (socket) => {
     // console.log("A new User Message", message);
   });
 
+  socket.on("leave-room", ({username, room}) => {
+    socket.leave(room)
+    socket.broadcast.to(room).emit("user-left", `${username} left ${room}`)
+  })
+  
   socket.on("disconnect", () => {
     if (socket.username && socket.room) {
       // socket.broadcast.emit("user-left", `${socket.username} left the chat`);
