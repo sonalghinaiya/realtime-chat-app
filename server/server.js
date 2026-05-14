@@ -1,6 +1,5 @@
 import http from "http";
 import express from "express";
-import path from "path";
 import cors from "cors"
 import { Server } from "socket.io";
 
@@ -9,7 +8,7 @@ const server = http.createServer(app);
 const PORT = 9000;
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://vibely-web-chat.vercel.app/"],
+    origin: ["http://localhost:5173", "https://vibely-web-chat.vercel.app"],
     methods: ["GET", "POST"]
   }
 });
@@ -48,7 +47,7 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(express.static(path.resolve("./public")));
+// app.use(express.static(path.resolve("./public")));
 
 // app.get("/", (req, res) => {
 //   return res.sendFile("/public/index.html");
