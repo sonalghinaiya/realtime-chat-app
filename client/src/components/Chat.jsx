@@ -24,7 +24,7 @@ function Chat() {
 
   // Send Message
   const handleSendMessage = (message) => {
-    const time = new Date().toLocaleDateString([], {
+    const time = new Date().toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -39,8 +39,34 @@ function Chat() {
   useEffect(() => {
     const handleMessage = (data) => {
       setMessages((prev) => [...prev, data]);
+    };
 
-      socket.on("message", handleMessage);
+    const handleUserJoined = (msg) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          system: true,
+          message: msg,
+        },
+      ]);
+    };
+    const handleUserLeft = (msg) => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          system: true,
+          message: msg,
+        },
+      ]);
+    };
+    socket.on("message", handleMessage);
+    socket.on("user-joined", handleUserJoined);
+    socket.on("user-left", handleUserLeft);
+
+    return () => {
+      socket.off("message", handleMessage);
+      socket.off("user-joined", handleUserJoined);
+      socket.off("user-left", handleUserLeft);
     };
   }, []);
   return (
