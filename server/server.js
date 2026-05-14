@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const PORT = 9000;
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "https://vibely-web-chat.vercel.app/"],
     methods: ["GET", "POST"]
   }
 });
