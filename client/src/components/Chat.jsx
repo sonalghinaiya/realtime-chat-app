@@ -3,11 +3,14 @@ import JoinRoom from "./JoinRoom";
 import { useState } from "react";
 import { socket } from "../socket/socket";
 import MessageInput from "./MessageInput";
+import MessageList from "./MessageList";
+import { useEffect } from "react";
 
 function Chat() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   // Join Room
   const handleJoinRoom = () => {
@@ -32,6 +35,14 @@ function Chat() {
       time,
     });
   };
+
+  useEffect(() => {
+    const handleMessage = (data) => {
+      setMessages((prev) => [...prev, data]);
+
+      socket.on("message", handleMessage);
+    };
+  }, []);
   return (
     <div className="h-screen bg-gray-100 flex justify-center items-center p-4">
       {!joined ? (
@@ -47,6 +58,7 @@ function Chat() {
           <div className="bg-blue-500 text-white p-4 text-xl font-bold">
             Room: {room}
           </div>
+          <MessageList messages={messages} username={username} />
 
           <MessageInput handleSendMessage={handleSendMessage} />
         </div>

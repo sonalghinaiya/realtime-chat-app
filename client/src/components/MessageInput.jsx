@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-function MessageInput() {
+function MessageInput({ handleSendMessage }) {
   const [message, setMessage] = useState("");
 
   const sendMessage = () => {
