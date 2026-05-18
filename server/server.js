@@ -1,6 +1,6 @@
 import http from "http";
 import express from "express";
-import cors from "cors"
+import cors from "cors";
 import { Server } from "socket.io";
 
 const app = express();
@@ -9,8 +9,8 @@ const PORT = 9000;
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "https://vibely-web-chat.vercel.app"],
-    methods: ["GET", "POST"]
-  }
+    methods: ["GET", "POST"],
+  },
 });
 
 //Socket.io
@@ -23,23 +23,27 @@ io.on("connection", (socket) => {
 
     socket.join(room);
     socket.emit("user-joined", `You joined ${room}`);
-    // socket.broadcast.emit("user-joined", `${username} joined the chat`);
     socket.broadcast.to(room).emit("user-joined", `${username} joined ${room}`);
   });
   socket.on("user-message", (data) => {
     io.to(socket.room).emit("message", data);
-    // io.emit("message", data);
-    // console.log("A new User Message", message);
   });
 
-  socket.on("leave-room", ({username, room}) => {
-    socket.leave(room)
-    socket.broadcast.to(room).emit("user-left", `${username} left ${room}`)
-  })
-  
+  socket.on("leave-room", ({ username, room }) => {
+    socket.leave(room);
+    socket.broadcast.to(room).emit("user-left", `${username} left ${room}`);
+  });
+
+  socket.on("typing", ({ room, username }) => {
+    socket.broadcast.to(room).emit("user-typing", username);
+  });
+
+  socket.on("stop-typing", ({ room, username }) => {
+    socket.broadcast.to(room).emit("user-stop-typing", username);
+  });
+
   socket.on("disconnect", () => {
     if (socket.username && socket.room) {
-      // socket.broadcast.emit("user-left", `${socket.username} left the chat`);
       socket.broadcast
         .to(socket.room)
         .emit("user-left", `${socket.username} left ${socket.room}`);

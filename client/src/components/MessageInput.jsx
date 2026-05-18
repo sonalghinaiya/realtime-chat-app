@@ -1,13 +1,27 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState } from "react";
 
-function MessageInput({ handleSendMessage }) {
+function MessageInput({ handleSendMessage, handleTyping, handleStopTyping }) {
   const [message, setMessage] = useState("");
+  const typingTimeout = useRef(null);
 
   const sendMessage = () => {
     if (!message.trim()) return;
     handleSendMessage(message);
+    handleStopTyping();
+    clearTimeout(typingTimeout.current);
     setMessage("");
+  };
+
+  const handleChange = (e) => {
+    setMessage(e.target.value);
+    handleTyping();
+
+    clearTimeout(typingTimeout.current);
+
+    typingTimeout.current = setTimeout(() => {
+      handleStopTyping();
+    }, 1000);
   };
   return (
     <div className="flex gap-2 p-4 border-t bg-white">
@@ -15,7 +29,7 @@ function MessageInput({ handleSendMessage }) {
         type="text"
         placeholder="Type message..."
         value={message}
-        onChange={(e) => setMessage(e.target.value)}
+        onChange={handleChange}
         onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         className="flex-1 border rounded-md p-3 outline-none"
       />

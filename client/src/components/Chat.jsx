@@ -12,6 +12,7 @@ function Chat() {
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [typingUsers, setTypingUsers] = useState([]);
 
   // Join Room
   const handleJoinRoom = () => {
@@ -31,6 +32,7 @@ function Chat() {
     });
     setJoined(false);
     setMessages([]);
+    setTypingUsers([]);
     setRoom("");
     setUsername("");
   };
@@ -47,6 +49,14 @@ function Chat() {
       message,
       time,
     });
+  };
+
+  // Handle Typing
+  const handleTyping = () => {
+    socket.emit("typing", { room, username });
+  };
+  const handleStopTyping = () => {
+    socket.emit("stop-typing", { room, username });
   };
 
   useEffect(() => {
@@ -72,14 +82,27 @@ function Chat() {
         },
       ]);
     };
+
+    const handleUserTyping = (username) => {
+      setTypingUsers(`${username} is typing...`);
+    };
+
+    const handleUserStopTyping = () => {
+      setTypingUsers("");
+    };
+
     socket.on("message", handleMessage);
     socket.on("user-joined", handleUserJoined);
     socket.on("user-left", handleUserLeft);
+    socket.on("user-typing", handleUserTyping);
+    socket.on("user-stop-typing", handleUserStopTyping);
 
     return () => {
       socket.off("message", handleMessage);
       socket.off("user-joined", handleUserJoined);
       socket.off("user-left", handleUserLeft);
+      socket.off("user-typing", handleUserTyping);
+      socket.off("user-stop-typing", handleUserStopTyping);
     };
   }, []);
   return (
@@ -111,7 +134,16 @@ function Chat() {
           </div>
           <MessageList messages={messages} username={username} />
 
-          <MessageInput handleSendMessage={handleSendMessage} />
+          {typingUsers.length > 0 && (
+            <div className="px-4 pb-2 text-sm text-gray-500 italic">
+              {typingUsers}
+            </div>
+          )}
+          <MessageInput
+            handleSendMessage={handleSendMessage}
+            handleTyping={handleTyping}
+            handleStopTyping={handleStopTyping}
+          />
         </div>
       )}
     </div>
