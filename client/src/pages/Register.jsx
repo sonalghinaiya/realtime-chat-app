@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import {
-  MessageSquare,
-  Mail,
-  Lock,
-  User,
-  Loader2,
   AlertCircle,
+  Loader2,
+  Lock,
+  Mail,
+  MessageSquare,
+  User,
 } from "lucide-react";
-import { toast, Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -18,13 +18,6 @@ function Register() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/chat");
-    }
-  }, [navigate]);
 
   const validateForm = () => {
     if (!name || !email || !password) {
@@ -70,12 +63,10 @@ function Register() {
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.data));
         toast.success("Account created successfully!");
 
         setTimeout(() => {
-          navigate("/login");
+          navigate("/");
         }, 500);
       } else {
         setError(data.message || "Registration failed");
@@ -92,8 +83,6 @@ function Register() {
 
   return (
     <div className="h-screen overflow-y-auto flex justify-center items-center bg-gradient-to-br  from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <Toaster position="top-center" />
-
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
           <div className="bg-gradient-to-r from-blue-500 to-indigo-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-2 shadow-lg">
@@ -179,27 +168,6 @@ function Register() {
               />
             </div>
           </div>
-
-          {/* Confirm Password Input */}
-          {/* <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Password
-            </label>
-            <div className="relative">
-              <Lock
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <input
-                type="password"
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full border-2 border-gray-200 pl-10 pr-4 py-3 rounded-lg outline-none focus:border-purple-500 transition text-sm"
-                disabled={loading}
-              />
-            </div>
-          </div> */}
 
           <button
             type="submit"

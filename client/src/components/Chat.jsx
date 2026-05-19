@@ -8,11 +8,12 @@ import { useEffect } from "react";
 import { ChevronDown, LogOut, Users } from "lucide-react";
 
 function Chat() {
-  const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [joined, setJoined] = useState(false);
   const [messages, setMessages] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const username = user.name;
 
   // Join Room
   const handleJoinRoom = () => {
@@ -109,8 +110,6 @@ function Chat() {
     <div className="h-screen bg-gray-100 flex justify-center items-center p-4">
       {!joined ? (
         <JoinRoom
-          username={username}
-          setUsername={setUsername}
           room={room}
           setRoom={setRoom}
           handleJoinRoom={handleJoinRoom}

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { AlertCircle, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { MessageSquare, Mail, Lock, Loader2, AlertCircle } from "lucide-react";
-import { toast, Toaster } from "react-hot-toast";
 
 function Login() {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      navigate("/chat");
+      navigate("/welcome");
     }
   }, [navigate]);
 
@@ -60,9 +60,9 @@ function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.data));
         toast.success("Login successful!");
-        
+
         setTimeout(() => {
-          navigate("/chat");
+          navigate("/welcome");
         }, 500);
       } else {
         setError(data.message || "Login failed");
@@ -79,8 +79,6 @@ function Login() {
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
-      <Toaster position="top-center" />
-      
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="bg-gradient-to-r from-blue-500 to-indigo-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
