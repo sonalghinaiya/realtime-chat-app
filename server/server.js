@@ -6,6 +6,13 @@ import authRoutes from "./routes/authRoutes.js"
 import { connectDB } from "./config/db.js";
 
 const app = express();
+
+app.use(cors({
+  origin: ["http://localhost:5173", "https://vibely-web-chat.vercel.app"],
+}));
+
+app.use(express.json());
+
 const server = http.createServer(app);
 const PORT = process.env.PORT || 5000;
 const url = process.env.MONGODB_URI;
@@ -54,8 +61,8 @@ io.on("connection", (socket) => {
   });
 });
 
-app.use(express.json());
 app.use("/api/auth", authRoutes)
+
 connectDB(url).then(() => console.log("MongoDB Connected!"));
 
 // app.use(express.static(path.resolve("./public")));
